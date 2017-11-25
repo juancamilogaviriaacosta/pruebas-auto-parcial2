@@ -2,15 +2,11 @@ package org.gnucash.android.ui.account;
 
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v4.app.Fragment;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
 
 import org.gnucash.android.R;
 import org.gnucash.android.app.GnuCashApplication;
@@ -23,32 +19,20 @@ import org.gnucash.android.db.adapter.SplitsDbAdapter;
 import org.gnucash.android.db.adapter.TransactionsDbAdapter;
 import org.gnucash.android.model.Account;
 import org.gnucash.android.model.Commodity;
-import org.gnucash.android.test.ui.util.DisableAnimationsRule;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.espresso.Espresso.closeSoftKeyboard;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.swipeLeft;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
-import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.gnucash.android.test.ui.AccountsActivityTest.preventFirstRunDialogs;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.core.Is.is;
 
 
 @LargeTest
@@ -121,8 +105,17 @@ public class Mutante174Test {
         }
     }
 
+    private static void sleep(long millis){
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Test
     public void mutante174Test() {
+        sleep(3000);
         onView(withText("Simple account")).check(matches(isDisplayed())).perform(click());
         onView(withId(R.id.fab_create_transaction)).check(matches(isDisplayed())).perform(click());
         onView(withId(R.id.input_transaction_name)).check(matches(isDisplayed())).perform(typeText("transaccion_ejemplo"));
@@ -130,32 +123,5 @@ public class Mutante174Test {
         onView(withId(R.id.menu_save)).check(matches(isDisplayed())).perform(click());
         onView(withId(R.id.edit_transaction)).check(matches(isDisplayed())).perform(click());
         onView(withId(R.id.input_transaction_name)).check(matches(withText("Simple account")));
-    }
-
-    private static Matcher<View> childAtPosition(
-            final Matcher<View> parentMatcher, final int position) {
-
-        return new TypeSafeMatcher<View>() {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("Child at position " + position + " in parent ");
-                parentMatcher.describeTo(description);
-            }
-
-            @Override
-            public boolean matchesSafely(View view) {
-                ViewParent parent = view.getParent();
-                return parent instanceof ViewGroup && parentMatcher.matches(parent)
-                        && view.equals(((ViewGroup) parent).getChildAt(position));
-            }
-        };
-    }
-
-    private static void sleep(long millis){
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 }
