@@ -52,7 +52,7 @@ import static org.hamcrest.core.Is.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class ColorPickerTest {
+public class Mutante706Test {
 
     @Rule
     public ActivityTestRule<AccountsActivity> mActivityTestRule = new ActivityTestRule<>(AccountsActivity.class);
@@ -116,7 +116,7 @@ public class ColorPickerTest {
     }
 
     @Test
-    public void colorPickerTest() {
+    public void mutante706Test() {
         ViewInteraction floatingActionButton2 = onView(
                 allOf(withId(R.id.fab_create_account),
                         childAtPosition(
