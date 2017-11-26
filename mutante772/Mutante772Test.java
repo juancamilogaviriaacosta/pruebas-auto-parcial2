@@ -117,7 +117,7 @@ public class Mutante772Test {
     }
 
     @Test
-    public void mutante636Test() {
+    public void mutante772Test() {
         sleep(3000);
         onView(withText("Simple account")).check(matches(isDisplayed())).perform(click());
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());

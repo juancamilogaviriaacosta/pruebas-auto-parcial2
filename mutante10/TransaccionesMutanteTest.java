@@ -1,38 +1,40 @@
 package org.gnucash.android.ui.account;
 
-
-import android.support.test.espresso.DataInteraction;
-import android.support.test.espresso.ViewInteraction;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v4.app.Fragment;
 import android.test.suitebuilder.annotation.LargeTest;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
+import android.util.Log;
 
 import org.gnucash.android.R;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
+import org.gnucash.android.app.GnuCashApplication;
+import org.gnucash.android.db.DatabaseHelper;
+import org.gnucash.android.db.adapter.AccountsDbAdapter;
+import org.gnucash.android.db.adapter.BooksDbAdapter;
+import org.gnucash.android.db.adapter.CommoditiesDbAdapter;
+import org.gnucash.android.db.adapter.DatabaseAdapter;
+import org.gnucash.android.db.adapter.SplitsDbAdapter;
+import org.gnucash.android.db.adapter.TransactionsDbAdapter;
+import org.gnucash.android.model.Account;
+import org.gnucash.android.model.Commodity;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.replaceText;
-import static android.support.test.espresso.action.ViewActions.scrollTo;
-import static android.support.test.espresso.action.ViewActions.swipeLeft;
+import static android.support.test.espresso.action.ViewActions.pressBack;
+import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
-import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.anything;
-import static org.hamcrest.Matchers.is;
+import static org.gnucash.android.test.ui.AccountsActivityTest.preventFirstRunDialogs;
+
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -41,231 +43,86 @@ public class TransaccionesMutanteTest {
     @Rule
     public ActivityTestRule<AccountsActivity> mActivityTestRule = new ActivityTestRule<>(AccountsActivity.class);
 
-    @Test
-    public void transaccionesMutanteTest() {
-        ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.btn_save), withText("Next"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.LinearLayout")),
-                                        1),
-                                1),
-                        isDisplayed()));
-        appCompatButton.perform(click());
 
-        ViewInteraction viewPager = onView(
-                allOf(withId(R.id.pager),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        viewPager.perform(swipeLeft());
+    private static final String ACCOUNTS_CURRENCY_CODE = "USD";
+    private static final String SIMPLE_ACCOUNT_NAME = "Simple account";
+    private static final String SIMPLE_ACCOUNT_UID = "simple-account";
 
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.btn_save), withText("Next"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.LinearLayout")),
-                                        1),
-                                1),
-                        isDisplayed()));
-        appCompatButton2.perform(click());
+    private static DatabaseHelper mDbHelper;
+    private static SQLiteDatabase mDb;
+    private static AccountsDbAdapter mAccountsDbAdapter;
+    private static TransactionsDbAdapter mTransactionsDbAdapter;
+    private static SplitsDbAdapter mSplitsDbAdapter;
+    private AccountsActivity mAccountsActivity;
 
-        ViewInteraction viewPager2 = onView(
-                allOf(withId(R.id.pager),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        viewPager2.perform(swipeLeft());
+    @BeforeClass
+    public static void prepTest(){
+        preventFirstRunDialogs(GnuCashApplication.getAppContext());
 
-        ViewInteraction appCompatButton3 = onView(
-                allOf(withId(R.id.btn_save), withText("Next"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.LinearLayout")),
-                                        1),
-                                1),
-                        isDisplayed()));
-        appCompatButton3.perform(click());
-
-        ViewInteraction viewPager3 = onView(
-                allOf(withId(R.id.pager),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        viewPager3.perform(swipeLeft());
-
-        DataInteraction appCompatCheckedTextView = onData(anything())
-                .inAdapterView(allOf(withId(android.R.id.list),
-                        childAtPosition(
-                                withClassName(is("android.widget.LinearLayout")),
-                                1)))
-                .atPosition(0);
-        appCompatCheckedTextView.perform(click());
-
-        ViewInteraction appCompatButton4 = onView(
-                allOf(withId(R.id.btn_save), withText("Next"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.LinearLayout")),
-                                        1),
-                                1),
-                        isDisplayed()));
-        appCompatButton4.perform(click());
-
-        ViewInteraction viewPager4 = onView(
-                allOf(withId(R.id.pager),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        viewPager4.perform(swipeLeft());
-
-        ViewInteraction appCompatButton5 = onView(
-                allOf(withId(R.id.btn_save), withText("Done"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.LinearLayout")),
-                                        1),
-                                1),
-                        isDisplayed()));
-        appCompatButton5.perform(click());
-
-        ViewInteraction appCompatButton6 = onView(
-                allOf(withId(android.R.id.button1), withText("Dismiss"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
-                                        0),
-                                3)));
-        appCompatButton6.perform(scrollTo(), click());
-
-        ViewInteraction floatingActionButton = onView(
-                allOf(withId(R.id.fab_create_account),
-                        childAtPosition(
-                                allOf(withId(R.id.coordinatorLayout),
-                                        childAtPosition(
-                                                withId(R.id.drawer_layout),
-                                                0)),
-                                2),
-                        isDisplayed()));
-        floatingActionButton.perform(click());
-
-        ViewInteraction appCompatEditText = onView(
-                allOf(withId(R.id.input_account_name),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.name_text_input_layout),
-                                        0),
-                                0)));
-        appCompatEditText.perform(scrollTo(), replaceText("A"), closeSoftKeyboard());
-
-        ViewInteraction actionMenuItemView = onView(
-                allOf(withId(R.id.menu_save), withText("Save"), withContentDescription("Save"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.toolbar),
-                                        2),
-                                0),
-                        isDisplayed()));
-        actionMenuItemView.perform(click());
-
-        ViewInteraction cardView = onView(
-                allOf(childAtPosition(
-                        allOf(withId(R.id.account_recycler_view),
-                                childAtPosition(
-                                        withId(R.id.fragment_account_list),
-                                        0)),
-                        0),
-                        isDisplayed()));
-        cardView.perform(click());
-
-        ViewInteraction floatingActionButton2 = onView(
-                allOf(withId(R.id.fab_create_transaction),
-                        childAtPosition(
-                                allOf(withId(R.id.coordinatorLayout),
-                                        childAtPosition(
-                                                withId(R.id.drawer_layout),
-                                                0)),
-                                3),
-                        isDisplayed()));
-        floatingActionButton2.perform(click());
-
-        ViewInteraction appCompatAutoCompleteTextView = onView(
-                allOf(withId(R.id.input_transaction_name),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.fragment_transaction_form),
-                                        0),
-                                0)));
-        appCompatAutoCompleteTextView.perform(scrollTo(), replaceText("B"), closeSoftKeyboard());
-
-        ViewInteraction calculatorEditText = onView(
-                allOf(withId(R.id.input_transaction_amount),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.fragment_transaction_form),
-                                        2),
-                                1)));
-        calculatorEditText.perform(scrollTo(), click());
-
-        ViewInteraction calculatorEditText2 = onView(
-                allOf(withId(R.id.input_transaction_amount),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.fragment_transaction_form),
-                                        2),
-                                1)));
-        calculatorEditText2.perform(scrollTo(), replaceText("6"), closeSoftKeyboard());
-
-        ViewInteraction actionMenuItemView2 = onView(
-                allOf(withId(R.id.menu_save), withText("Save"), withContentDescription("Save"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.toolbar),
-                                        2),
-                                0),
-                        isDisplayed()));
-        actionMenuItemView2.perform(click());
-
-        ViewInteraction cardView2 = onView(
-                allOf(childAtPosition(
-                        allOf(withId(R.id.transaction_recycler_view),
-                                childAtPosition(
-                                        withId(R.id.fragment_transaction_list),
-                                        0)),
-                        0),
-                        isDisplayed()));
-        cardView2.perform(click());
-
+        String activeBookUID = BooksDbAdapter.getInstance().getActiveBookUID();
+        mDbHelper = new DatabaseHelper(GnuCashApplication.getAppContext(), activeBookUID);
+        try {
+            mDb = mDbHelper.getWritableDatabase();
+        } catch (SQLException e) {
+            Log.e("AccountsActivityTest", "Error getting database: " + e.getMessage());
+            mDb = mDbHelper.getReadableDatabase();
+        }
+        mSplitsDbAdapter        = SplitsDbAdapter.getInstance();
+        mTransactionsDbAdapter  = TransactionsDbAdapter.getInstance();
+        mAccountsDbAdapter      = AccountsDbAdapter.getInstance();
+        CommoditiesDbAdapter commoditiesDbAdapter = new CommoditiesDbAdapter(mDb);
     }
 
-    private static Matcher<View> childAtPosition(
-            final Matcher<View> parentMatcher, final int position) {
+    @Before
+    public void setUp() throws Exception {
+        mAccountsActivity = mActivityTestRule.getActivity();
 
-        return new TypeSafeMatcher<View>() {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("Child at position " + position + " in parent ");
-                parentMatcher.describeTo(description);
-            }
+        mAccountsDbAdapter.deleteAllRecords();
 
-            @Override
-            public boolean matchesSafely(View view) {
-                ViewParent parent = view.getParent();
-                return parent instanceof ViewGroup && parentMatcher.matches(parent)
-                        && view.equals(((ViewGroup) parent).getChildAt(position));
-            }
-        };
+        Account simpleAccount = new Account(SIMPLE_ACCOUNT_NAME);
+        simpleAccount.setUID(SIMPLE_ACCOUNT_UID);
+        simpleAccount.setCommodity(Commodity.getInstance(ACCOUNTS_CURRENCY_CODE));
+        mAccountsDbAdapter.addRecord(simpleAccount, DatabaseAdapter.UpdateMethod.insert);
+
+        Account simpleAccount2 = new Account(SIMPLE_ACCOUNT_NAME + "2");
+        simpleAccount2.setUID(SIMPLE_ACCOUNT_UID + "2");
+        simpleAccount2.setCommodity(Commodity.getInstance(ACCOUNTS_CURRENCY_CODE));
+        mAccountsDbAdapter.addRecord(simpleAccount2, DatabaseAdapter.UpdateMethod.insert);
+
+        refreshAccountsList();
+    }
+
+    private void refreshAccountsList(){
+        try {
+            mActivityTestRule.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Fragment fragment = mAccountsActivity.getCurrentAccountListFragment();
+                    ((AccountsListFragment) fragment).refresh();
+                }
+            });
+        } catch (Throwable throwable) {
+            System.err.println("Failed to refresh fragment");
+        }
+    }
+
+    private static void sleep(long millis){
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void transaccionesMutanteTest() {
+        sleep(3000);
+        onView(withText("Simple account")).check(matches(isDisplayed())).perform(click());
+        onView(withId(R.id.fab_create_transaction)).check(matches(isDisplayed())).perform(click());
+        onView(withId(R.id.input_transaction_name)).check(matches(isDisplayed())).perform(typeText("transaccion_ejemplo"));
+        onView(withId(R.id.input_transaction_amount)).check(matches(isDisplayed())).perform(typeText("5"));
+        onView(withId(R.id.menu_save)).check(matches(isDisplayed())).perform(click());
+        onView(withText("transaccion_ejemplo")).check(matches(isDisplayed())).perform(click());
+        onView(withId(R.id.input_transaction_name)).check(matches(withText("Simple account")));
     }
 }
